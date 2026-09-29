@@ -1,0 +1,25 @@
+name: MoneyMindz Wall Street commando
+
+on:
+  schedule:
+    # Iedere vijf minuten, niet op het drukke hele uur.
+    - cron: '2/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: money-mindz-wallstreet-poll
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Controleer /wallstreet in Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python3 wallstreet.py
